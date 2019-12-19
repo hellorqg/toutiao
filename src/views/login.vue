@@ -55,10 +55,25 @@ export default {
   },
   methods: {
     loginSubmit () {
-      this.$refs.myForm.validate(function (isOk) {
+      this.$refs.myForm.validate(isOk => {
         if (isOk) {
           // 校验通过 调用接口检查数据
-          console.log('通过')
+          // console.log('通过')
+          this.$axios({
+            url: '/authorizations',
+            method: 'post',
+            data: this.loginForm
+          }).then(res => {
+            // console.log('登录成功')
+            window.localStorage.setItem('user-token', res
+              .data.data.token)
+            this.$router.push('/home')
+          }).catch(res => {
+            this.$message({
+              message: '手机号或验证码错误',
+              type: 'warning'
+            })
+          })
         }
       })
     }

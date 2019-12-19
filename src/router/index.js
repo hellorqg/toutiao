@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import logintt from '../views/login.vue'
+import loginPra from '../views/login-pra.vue'
 Vue.use(VueRouter)
 
 const routes = [
@@ -13,6 +14,10 @@ const routes = [
   {
     path: '/login',
     component: logintt
+  },
+  {
+    path: '/loginPra',
+    component: loginPra
   }
   // {
   //   path: '/about',

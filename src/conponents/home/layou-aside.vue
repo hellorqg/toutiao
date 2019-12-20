@@ -33,17 +33,17 @@ export default {}
 </script>
 
 <style lang="less" scoped>
-.alides{
-    height: 100vh;
-    background-color: #353b4e;
-    width: 251px;
-}
+  // .alides{
+  //     // height: 100vh;
+  //     // background-color: #353b4e;
+  //     // width: 251px;
+  // }
 .titles{
     background-color: #2e2f32;
     text-align: center;
     padding: 10px 0;
     img{
-        height: 40px;
+        height: 35px;
 
     }
 }

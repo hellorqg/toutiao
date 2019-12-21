@@ -2,12 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import ElementUI from 'element-ui'
-import './permission'
-import axios from 'axios'
-import components from './components/home'
+import './permission' // 调用导航守卫
+import axios from './utils/request' // 调用修改后的axios
+import components from './components/home' // 全局注册组件
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 import './styles/index.less'
-axios.defaults.baseURL = 'http://ttapi.research.itcast.cn/mp/v1_0'
 Vue.prototype.$axios = axios
 // 全局
 Vue.config.productionTip = false

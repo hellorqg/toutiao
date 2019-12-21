@@ -9,10 +9,11 @@
     <!-- 列-右 -->
     <el-col>
       <el-row class="rightHeader" type="flex" justify="end" align="middle">
-        <img src="../../assets/img/htl.jpg" alt />
+        <img :src="userInfo.photo? userInfo.photo : defaultImg" alt />
         <el-dropdown>
           <span>
-            鸩是臭弟弟
+            <!-- 鸩是臭弟弟 -->
+            {{userInfo.name}}
             <i class="el-icon-arrow-down"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
@@ -27,7 +28,29 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      userInfo: {},
+      defaultImg: require('../../assets/img/htl.jpg')
+    }
+  },
+
+  created () {
+    let tokens = localStorage.getItem('user-token')
+    // console.log(tokens)
+
+    this.$axios({
+      url: '/user/profile',
+      headers: {
+        Authorization: `Bearer ${tokens}`
+      }
+    }).then(res => {
+      console.log(res.data)
+      this.userInfo = res.data.data
+    })
+  }
+}
 </script>
 
 <style lang="less" scoped>

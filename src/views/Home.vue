@@ -15,14 +15,15 @@
 </template>
 
 <script>
-import layouHeader from '../conponents/home/layou-header'
-import layouAside from '../conponents/home/layou-aside'
+// 全局注册过后就不需要再引入了
+// import layouHeader from '../conponents/home/layou-header'
+// import layouAside from '../conponents/home/layou-aside'
 // @ is an alias to /src
 
 export default {
-  components: {
-    'layouAside': layouAside,
-    'layouHeader': layouHeader
-  }
+  // components: {
+  //   'layouAside': layouAside,
+  //   'layouHeader': layouHeader
+  // }
 }
 </script>

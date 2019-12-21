@@ -64,7 +64,7 @@ export default {
             method: 'post',
             data: this.loginForm
           }).then(res => {
-            // console.log('登录成功')
+            // console.log(res)
             window.localStorage.setItem('user-token', res
               .data.data.token)
             this.$router.push('/home')

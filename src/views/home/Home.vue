@@ -10,10 +10,12 @@
         <layouHeader></layouHeader>
       </el-header>
       <el-main>
-        <!-- 二级路由容器 -->主体
-        <router-view>
-          <!-- 待填充内容 -->
-        </router-view>
+        <!-- 二级路由容器 -->
+         <!-- 待填充内容 -->
+         <el-card>
+           <breadcrumb slot="header"></breadcrumb>
+         </el-card>
+        <router-view></router-view>
       </el-main>
     </el-container>
   </el-container>

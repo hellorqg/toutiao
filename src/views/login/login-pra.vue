@@ -3,7 +3,7 @@
     <el-card class="logincarD">
       <!-- logo -->
       <div class="logodiv">
-        <img src="../assets/img/logo_index.png" alt />
+        <img src="../../assets/img/logo_index.png" alt />
       </div>
       <!-- 引入表单 -->
       <el-form :model="forms" :rules="rulesForm" ref="myforms">
@@ -68,7 +68,7 @@ export default {
 
 <style lang="less" scoped>
 .loginBg {
-  background-image: url("../assets/img/bgimg.jpg");
+  background-image: url("../../assets/img/bgimg.jpg");
   height: 100vh;
   /* background-size: cover */
   display: flex;

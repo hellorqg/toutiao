@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
-import logintt from '../views/login.vue'
-import loginPra from '../views/login-pra.vue'
+import Home from '../views/home/Home.vue'
+import logintt from '../views/login/login.vue'
+import loginPra from '../views/login/login-pra.vue'
 Vue.use(VueRouter)
 
 const routes = [

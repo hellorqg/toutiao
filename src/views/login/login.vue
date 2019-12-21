@@ -2,7 +2,7 @@
   <div class="login">
     <el-card class="loginCard">
         <div class="login_d">
-            <img src="../assets/img/logo_index.png" alt="">
+            <img src="../../assets/img/logo_index.png" alt="">
         </div>
         <el-form :model="loginForm" :rules="loginRules" ref="myForm">
             <el-form-item prop="mobile">
@@ -83,7 +83,7 @@ export default {
 
 <style lang = 'less' scoped>
 .login {
-  background-image: url("../assets/img/hy.jpg");
+  background-image: url("../../assets/img/hy.jpg");
   height: 100vh;
   display: flex;
   justify-content: center;

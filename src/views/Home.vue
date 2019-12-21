@@ -9,7 +9,12 @@
       <el-header>
         <layouHeader></layouHeader>
       </el-header>
-      <el-main>主体</el-main>
+      <el-main>
+        <!-- 二级路由容器 -->主体
+        <router-view>
+          <!-- 待填充内容 -->
+        </router-view>
+      </el-main>
     </el-container>
   </el-container>
 </template>

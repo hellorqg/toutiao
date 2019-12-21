@@ -10,16 +10,16 @@
     <el-col>
       <el-row class="rightHeader" type="flex" justify="end" align="middle">
         <img :src="userInfo.photo? userInfo.photo : defaultImg" alt />
-        <el-dropdown>
+        <el-dropdown @command="logOut">
           <span>
             <!-- 鸩是臭弟弟 -->
             {{userInfo.name}}
             <i class="el-icon-arrow-down"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人信息</el-dropdown-item>
-            <el-dropdown-item>git地址</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item command="userInfo">个人信息</el-dropdown-item>
+            <el-dropdown-item command='gitSrc'>git地址</el-dropdown-item>
+            <el-dropdown-item command="logOuts">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>
@@ -35,11 +35,24 @@ export default {
       defaultImg: require('../../assets/img/htl.jpg')
     }
   },
+  methods: {
+    // 退出方法
+    logOut (command) {
+      if (command === 'logOuts') {
+        localStorage.removeItem('user-token')
+        // 返回到登录页
+        this.$router.push('/login')
+      } else if (command === 'gitSrc') {
+        window.location.href = 'https://github.com/hellorqg/toutiao'
+      }
+    }
+  },
 
   created () {
     let tokens = localStorage.getItem('user-token')
     // console.log(tokens)
 
+    // 调用接口 获取数据
     this.$axios({
       url: '/user/profile',
       headers: {
@@ -47,6 +60,7 @@ export default {
       }
     }).then(res => {
       console.log(res.data)
+      // 接口返回数据赋值给data中的变量
       this.userInfo = res.data.data
     })
   }

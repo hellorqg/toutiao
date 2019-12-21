@@ -49,19 +49,19 @@ export default {
   },
 
   created () {
-    let tokens = localStorage.getItem('user-token')
+    // let tokens = localStorage.getItem('user-token')
     // console.log(tokens)
 
     // 调用接口 获取数据
     this.$axios({
-      url: '/user/profile',
-      headers: {
-        Authorization: `Bearer ${tokens}`
-      }
+      url: '/user/profile'
+      // headers: {
+      //   Authorization: `Bearer ${tokens}`
+      // }
     }).then(res => {
-      console.log(res.data)
+      // console.log(res.data)
       // 接口返回数据赋值给data中的变量
-      this.userInfo = res.data.data
+      this.userInfo = res.data
     })
   }
 }

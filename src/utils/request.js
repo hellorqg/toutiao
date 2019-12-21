@@ -11,5 +11,14 @@ axios.interceptors.request.use(function (config) {
   return config
 }, function () {})
 
+// 响应拦截器
+axios.interceptors.response.use(function (response) {
+//   console.log(response)
+
+  return response.data ? response.data : {}
+}, function () {
+
+})
+
 // axios更改过后导出 修改所有的axios
 export default axios

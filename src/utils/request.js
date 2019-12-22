@@ -40,7 +40,10 @@ function (error) {
     case 507:
       message = '服务器数据库异常'
       break
+    case 405:
+      message = '请求参数错误'
 
+      break
     default:
       break
   }

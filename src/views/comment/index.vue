@@ -62,7 +62,8 @@ export default {
         // 调用接口 修改状态
         this.$axios({
           url: '/comments/status',
-          params: { article_id: row.id },
+          method: 'put',
+          params: { article_id: row.id.toString() },
           //   是否允许评论 点击之后状态改变 原本false的话不允许 现在是true 允许
           data: { allow_comment: !row.comment_status }
         }).then(res => {

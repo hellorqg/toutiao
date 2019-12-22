@@ -1,3 +1,5 @@
+import JSONBig from 'json-bigint'
+
 // 封装axios
 import axios from 'axios'
 // 单独引用router
@@ -13,6 +15,11 @@ axios.interceptors.request.use(function (config) {
   config.headers.Authorization = `Bearer ${token}`
   return config
 }, function () {})
+// 响应拦截器之前的一个操作
+axios.defaults.transformResponse = [function (data) {
+  // debugger
+  return data ? JSONBig.parse(data) : {}
+}]
 
 // 响应拦截器
 // 成功进入这个函数
@@ -49,6 +56,9 @@ function (error) {
   }
   //   提示上面状态码时的弹窗信息
   Message({ type: 'warning', message })
+  // 这里需要处理错误后的代码执行过程 否则仍会进 then中
+
+  return Promise.reject(error)
 })
 
 // axios更改过后导出 修改所有的axios

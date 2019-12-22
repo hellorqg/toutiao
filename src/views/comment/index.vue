@@ -4,7 +4,7 @@
       <template slot="title">评论管理</template>
     </breadcrumb>
     <!-- 表格 -->
-    <el-table :data="list">
+    <el-table :data="list" v-loading='loading'>
       <!-- 给表头加label属性 -->
       <el-table-column prop="title" label="标题" width="800"></el-table-column>
       <el-table-column :formatter="formatterBlean" prop="comment_status" label="评论状态"></el-table-column>
@@ -47,7 +47,9 @@ export default {
         total: 0, // 总页数
         currentPage: 1, // 当前页
         pageSize: 10 // 每页数量
-      }
+      },
+      // 控制加载
+      loading: false
     }
   },
   methods: {
@@ -56,6 +58,7 @@ export default {
       this.pages.currentPage = newPage
       this.getAndShow()
     },
+
     // 调用接口 获取评论页数的数据
     getpages () {
       this.$axios({})
@@ -70,10 +73,14 @@ export default {
 
     // 获取数据
     getAndShow () {
+      // 获取时打开加载
+      this.loading = true
       this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.pages.currentPage, per_page: this.pages.pageSize }
       }).then(res => {
+        // 获取完毕后关闭加载
+        this.loading = false
         // debugger
         //   console.log(res.data)
         this.list = res.data.results

@@ -12,9 +12,9 @@
       <el-main>
         <!-- 二级路由容器 -->
          <!-- 待填充内容 -->
-         <el-card>
+         <!-- <el-card>
            <breadcrumb slot="header"></breadcrumb>
-         </el-card>
+         </el-card> -->
         <router-view></router-view>
       </el-main>
     </el-container>

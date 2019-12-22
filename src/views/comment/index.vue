@@ -22,6 +22,17 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 设置分页组件 -->
+    <el-row type="flex" justify="center" style="height:80px" align="middle">
+      <el-pagination
+        background
+        layout="prev, pager, next , jumper"
+        :total="pages.total"
+        :page-size="pages.pageSize"
+        :current-page="pages.currentPage"
+        @current-change="pageChange"
+      ></el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -29,25 +40,45 @@
 export default {
   data () {
     return {
-      list: []
+      // 获取的评论列表
+      list: [],
+      // 分页的配置信息
+      pages: {
+        total: 0, // 总页数
+        currentPage: 1, // 当前页
+        pageSize: 10 // 每页数量
+      }
     }
   },
   methods: {
+    pageChange (newPage) {
+      // 拿到最新的页码 然后再获取数据
+      this.pages.currentPage = newPage
+      this.getAndShow()
+    },
+    // 调用接口 获取评论页数的数据
+    getpages () {
+      this.$axios({})
+    },
     //   格式化数据函数
     formatterBlean (row, column, cellValue, index) {
       // row: 当前行数据  column：当前列信息  cellValue：当前单元格的值  index：下标
-    //   console.log(row)
+      //   console.log(row)
       //   debugger
       return cellValue ? '正常' : '关闭'
     },
 
+    // 获取数据
     getAndShow () {
       this.$axios({
         url: '/articles',
-        params: { response_type: 'comment' }
+        params: { response_type: 'comment', page: this.pages.currentPage, per_page: this.pages.pageSize }
       }).then(res => {
-      //   console.log(res.data)
+        // debugger
+        //   console.log(res.data)
         this.list = res.data.results
+        this.pages.total = res.data.total_count // 文章总条数
+        this.pages.currentPage = res.data.page // 当前页
       })
     },
 
@@ -67,12 +98,11 @@ export default {
           //   是否允许评论 点击之后状态改变 原本false的话不允许 现在是true 允许
           data: { allow_comment: !row.comment_status }
         }).then(res => {
-        // 修改评论过后再调用数据
+          // 修改评论过后再调用数据
           this.getAndShow()
         })
       })
     }
-
   },
 
   created () {

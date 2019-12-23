@@ -1,10 +1,13 @@
 <template>
-  <el-card>
+  <el-card v-loading='loading'>
     <breadcrumb slot="header">
       <template slot="title">素材管理</template>
     </breadcrumb>
     <el-row type="flex" justify="end">
-      <el-button type="primary" size="small">上传图片</el-button>
+      <!-- 上传图片 -->
+      <el-upload action="" :http-request="upImg" :show-file-list='false' >
+        <el-button type="primary" size="small">上传图片</el-button>
+      </el-upload>
     </el-row>
     <!-- tab栏切换 -->
     <el-tabs v-model="activeName" @tab-click='getCollet'>
@@ -39,10 +42,26 @@ export default {
     return {
       activeName: 'all', // 默认选中的tab栏
       imgs: [], // 用户图片的列表
-      collect: true // 用户图片是否收藏 布尔值
+      collect: true, // 用户图片是否收藏 布尔值
+      loading: false // 图片上传时加载
     }
   },
   methods: {
+    // 上传图片
+    upImg (params) {
+      this.loading = true
+      let data = new FormData()
+      data.append('image', params.file)
+      this.$axios({
+        method: 'post',
+        url: '/user/images',
+        data
+      }).then(res => {
+        this.loading = false
+        this.getandShow()
+      })
+      // debugger
+    },
 
     // 获取收藏图片
     getCollet () {

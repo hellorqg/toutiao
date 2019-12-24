@@ -25,6 +25,10 @@ const routes = [
     {
       path: 'material',
       component: () => import('../views/material/index.vue')
+    },
+    {
+      path: 'articles',
+      component: () => import('../views/articles')
     }]
   },
   {

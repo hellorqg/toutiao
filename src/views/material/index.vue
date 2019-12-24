@@ -37,6 +37,17 @@
         </div>
       </el-tab-pane>
     </el-tabs>
+    <!-- 分页 -->
+    <el-row type="flex" justify="center" style="height:80px;" align="middle">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="pages.total"
+        :current-page="pages.currentPage"
+        :page-size='pages.pageSizes'
+        @current-change='changepage'
+      ></el-pagination>
+    </el-row>
   </el-card>
 </template>
 
@@ -47,10 +58,20 @@ export default {
       activeName: 'all', // 默认选中的tab栏
       imgs: [], // 用户图片的列表
       // collect: true, // 用户图片是否收藏 布尔值
-      loading: false // 图片上传时加载
+      loading: false, // 图片上传时加载
+      pages: {
+        currentPage: 1,
+        pageSizes: 8,
+        total: 0
+      }
     }
   },
   methods: {
+    // 切换页码
+    changepage (newPage) {
+      this.pages.currentPage = newPage // 切换页码后将新页码赋值
+      this.getandShow() // 调用获取图片方法
+    },
     // 删除图片
     delImg (item) {
       this.$confirm('确定删除？').then(() => {
@@ -61,9 +82,7 @@ export default {
           // console.log(res)
           this.getandShow()
         })
-      }
-
-      )
+      })
     },
     // 取消/收藏图片
     collects (item) {
@@ -93,9 +112,10 @@ export default {
       // debugger
     },
 
-    // 获取收藏图片
+    // 切换tab栏 获取收藏图片
     getCollet () {
       // alert(this.activeName === 'collect')
+      this.pages.currentPage = 1
       this.getandShow()
     },
 
@@ -103,10 +123,15 @@ export default {
     getandShow () {
       this.$axios({
         url: '/user/images',
-        params: { collect: this.activeName === 'collect' }
+        params: {
+          collect: this.activeName === 'collect',
+          page: this.pages.currentPage, // 当前页
+          per_page: this.pages.pageSizes // 单页显示个数
+        }
       }).then(res => {
-        // console.log(res.data.results)
+        // console.log(res.data)
         this.imgs = res.data.results
+        this.pages.total = res.data.total_count // 总页数
       })
     }
   },

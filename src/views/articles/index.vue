@@ -9,7 +9,7 @@
         <el-form-item label="文章状态:">
           <!-- 单选组 -->
           <!-- <el-radio-group v-model="searchFrom.status" @change="changeSearch"> -->
-            <!-- 两种写法 -->
+          <!-- 两种写法 -->
           <el-radio-group v-model="searchFrom.status">
             <el-radio label="all">全部</el-radio>
             <el-radio :label="0">草稿</el-radio>
@@ -31,20 +31,19 @@
         </el-form-item>
         <el-form-item label="时间选择:">
           <el-date-picker
-
             v-model="searchFrom.dateValue"
-             value-format="yyyy-MM-dd"
+            value-format="yyyy-MM-dd"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          > </el-date-picker>
+          ></el-date-picker>
           {{searchFrom.dateValue}}
         </el-form-item>
       </el-form>
     </el-card>
     <!-- 下半部分 -->
     <el-card class="cardBig">
-      <div slot="header" class="cardHeader">共找到10000条信息</div>
+      <div slot="header" class="cardHeader">共找到{{ page.total }}条信息</div>
       <div class="boxs" v-for="item in list" :key="item.id.toString()">
         <!-- 左侧 -->
         <div class="left">
@@ -55,18 +54,28 @@
             <span class="date">{{item.pubdate}}</span>
           </div>
         </div>
-
         <!-- 右侧 -->
         <div class="right">
           <span>
             <i class="el-icon-edit"></i>修改
           </span>
-          <span>
+          <span @click="delArticles(item.id.toString())">
             <i class="el-icon-delete"></i>删除
           </span>
         </div>
       </div>
     </el-card>
+    <!-- 分页 -->
+    <el-row type="flex" justify="center" style="height:80px" align="middle">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="page.total"
+        :page-size="page.pageSize"
+        :current-page="page.pageCurrent"
+        @current-change="changepage"
+      ></el-pagination>
+    </el-row>
   </div>
 </template>
 
@@ -81,15 +90,16 @@ export default {
       },
       channelList: [], // 接受频道数据
       list: [], // 接收所有的文章数据
-      defaultImg: require('../../assets/img/lf.jpg')
+      defaultImg: require('../../assets/img/lf.jpg'),
+      page: { pageSize: 10, pageCurrent: 1, total: 0 }
     }
   },
   watch: {
     searchFrom: {
-      deep: true,
       handler () {
-        this.getandShow()
-      }
+        this.changeSearch()
+      },
+      deep: true
     }
   },
   filters: {
@@ -130,17 +140,51 @@ export default {
     }
   },
   methods: {
+    // 删除文章
+    delArticles (id) {
+      this.$confirm('是否删除').then(() => {
+        this.$axios({
+          url: `/articles/${id}`,
+          method: 'delete'
+        }).then(res => {
+          // console.log(res)
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+          this.condition()
+        })
+      })
+    },
+
+    condition () {
+      let params = {
+        // 加两个页码参数
+        page: this.page.pageCurrent,
+        per_page: this.page.pageSize,
+        status:
+          this.searchFrom.status === 'all' ? null : this.searchFrom.status, // 判断是否为全部的all 如果是则传null
+        channel_id: this.searchFrom.channel_id, // 频道id
+        begin_pubdate: this.searchFrom.dateValue.length
+          ? this.searchFrom.dateValue[0]
+          : null,
+        end_pubdate:
+          this.searchFrom.dateValue.length > 1
+            ? this.searchFrom.dateValue.length[1]
+            : null // 判断时间对象是否存在
+      }
+      this.getandShow(params)
+    },
+    // 页码改变事件
+    changepage (newpage) {
+      this.page.pageCurrent = newpage
+      this.condition()
+    },
     // 筛选
     changeSearch () {
       // alert(this.searchFrom.status)
-      let params = {
-        status: this.searchFrom.status === 'all' ? null : this.searchFrom.status, // 判断是否为全部的all 如果是则传null
-        channel_id: this.searchFrom.channel_id, // 频道id
-        begin_pubdate: this.searchFrom.dateValue.length ? this.searchFrom.dateValue[0] : null,
-        end_pubdate: this.searchFrom.dateValue.length > 1 ? this.searchFrom.dateValue.length[1] : null // 判断时间对象是否存在
-      }
-
-      this.getandShow(params)
+      this.page.pageCurrent = 1
+      this.condition()
     },
     //   获取文章频道
     getChannel () {
@@ -158,8 +202,10 @@ export default {
         url: '/articles',
         params
       }).then(res => {
-        console.log(res.data.results)
+        console.log(res.data)
         this.list = res.data.results
+        this.page.total = res.data.total_count
+        this.page.pageCurrent = res.data.page
       })
     }
   },

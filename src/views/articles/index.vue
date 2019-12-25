@@ -8,6 +8,8 @@
       <el-form>
         <el-form-item label="文章状态:">
           <!-- 单选组 -->
+          <!-- <el-radio-group v-model="searchFrom.status" @change="changeSearch"> -->
+            <!-- 两种写法 -->
           <el-radio-group v-model="searchFrom.status">
             <el-radio label="all">全部</el-radio>
             <el-radio :label="0">草稿</el-radio>
@@ -17,6 +19,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="频道列表:">
+          <!-- <el-select placeholder="请选择" v-model="searchFrom.channel_id" @change="changeSearch"> -->
           <el-select placeholder="请选择" v-model="searchFrom.channel_id">
             <el-option
               v-for="item in channelList"
@@ -28,11 +31,14 @@
         </el-form-item>
         <el-form-item label="时间选择:">
           <el-date-picker
+
             v-model="searchFrom.dateValue"
+             value-format="yyyy-MM-dd"
             type="daterange"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-          ></el-date-picker>
+          > </el-date-picker>
+          {{searchFrom.dateValue}}
         </el-form-item>
       </el-form>
     </el-card>
@@ -71,11 +77,19 @@ export default {
       searchFrom: {
         status: 'all',
         channel_id: null,
-        dateValue: []
+        dateValue: [] // 时间对象
       },
       channelList: [], // 接受频道数据
       list: [], // 接收所有的文章数据
       defaultImg: require('../../assets/img/lf.jpg')
+    }
+  },
+  watch: {
+    searchFrom: {
+      deep: true,
+      handler () {
+        this.getandShow()
+      }
     }
   },
   filters: {
@@ -116,6 +130,18 @@ export default {
     }
   },
   methods: {
+    // 筛选
+    changeSearch () {
+      // alert(this.searchFrom.status)
+      let params = {
+        status: this.searchFrom.status === 'all' ? null : this.searchFrom.status, // 判断是否为全部的all 如果是则传null
+        channel_id: this.searchFrom.channel_id, // 频道id
+        begin_pubdate: this.searchFrom.dateValue.length ? this.searchFrom.dateValue[0] : null,
+        end_pubdate: this.searchFrom.dateValue.length > 1 ? this.searchFrom.dateValue.length[1] : null // 判断时间对象是否存在
+      }
+
+      this.getandShow(params)
+    },
     //   获取文章频道
     getChannel () {
       this.$axios({
@@ -127,9 +153,10 @@ export default {
     },
 
     //   获取文章
-    getandShow () {
+    getandShow (params) {
       this.$axios({
-        url: '/articles'
+        url: '/articles',
+        params
       }).then(res => {
         console.log(res.data.results)
         this.list = res.data.results

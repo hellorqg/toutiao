@@ -11,6 +11,10 @@ const routes = [
     redirect: '/home'
   },
   {
+    path: '/login',
+    component: logintt
+  },
+  {
     path: '/home',
     name: 'home',
     component: Home,
@@ -29,12 +33,13 @@ const routes = [
     {
       path: 'articles',
       component: () => import('../views/articles')
+    },
+    {
+      path: 'publish',
+      component: () => import('../views/articles/createArticle.vue')
     }]
-  },
-  {
-    path: '/login',
-    component: logintt
   }
+
   // {
   //   path: '/about',
   //   name: 'about',

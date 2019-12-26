@@ -37,6 +37,10 @@ const routes = [
     {
       path: 'publish',
       component: () => import('../views/articles/createArticle.vue')
+    },
+    { // 修改文章
+      path: 'publish/:articleID',
+      component: () => import('../views/articles/createArticle.vue')
     }]
   }
 

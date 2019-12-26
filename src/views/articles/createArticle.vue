@@ -59,10 +59,17 @@ export default {
         content: [{ required: true, message: '内容不能为空' }],
         channel_id: [{ required: true, message: '频道不能为空' }]
       }
-
     }
   },
   methods: {
+    // 修改文章
+    editArticle (articleID) {
+      this.$axios({
+        url: `/articles/${articleID}`
+      }).then(res => {
+        this.formDate = res.data
+      })
+    },
     // 发布文章/草稿
     publishArticle (draft) {
       // console.log(this.$refs.myform)
@@ -94,8 +101,30 @@ export default {
       })
     }
   },
+  watch: {
+    $route  (to, from) { // 检测路由变化
+      // 判断是修改还是发布
+      if (to.params.articleID) {
+        // 存在长度则是去修改
+
+      } else {
+        // 是发布
+        this.formDate = {
+          title: '', // 标题
+          content: '', // 内容
+          cover: {
+            type: 0, // 文章封面类型
+            images: [] // 封面图片
+          },
+          channel_id: null
+        }
+      }
+    }
+  },
   created () {
     this.getChannels() // 获取文章频道
+    let { articleID } = this.$route.params
+    this.editArticle(articleID)
   }
 }
 </script>

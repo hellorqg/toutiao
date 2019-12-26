@@ -56,7 +56,7 @@
         </div>
         <!-- 右侧 -->
         <div class="right">
-          <span>
+          <span @click="toModify(item.id.toString())">
             <i class="el-icon-edit"></i>修改
           </span>
           <span @click="delArticles(item.id.toString())">
@@ -90,8 +90,8 @@ export default {
       },
       channelList: [], // 接受频道数据
       list: [], // 接收所有的文章数据
-      defaultImg: require('../../assets/img/lf.jpg'),
-      page: { pageSize: 10, pageCurrent: 1, total: 0 }
+      defaultImg: require('../../assets/img/lf.jpg'), // 默认图片
+      page: { pageSize: 10, pageCurrent: 1, total: 0 } // 分页
     }
   },
   watch: {
@@ -140,6 +140,9 @@ export default {
     }
   },
   methods: {
+    toModify (id) {
+      this.$router.push(`/home/publish/${id}`)
+    },
     // 删除文章
     delArticles (id) {
       this.$confirm('是否删除').then(() => {
@@ -202,7 +205,7 @@ export default {
         url: '/articles',
         params
       }).then(res => {
-        console.log(res.data)
+        console.log(res.data.results)
         this.list = res.data.results
         this.page.total = res.data.total_count
         this.page.pageCurrent = res.data.page

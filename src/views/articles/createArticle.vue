@@ -75,20 +75,21 @@ export default {
       // console.log(this.$refs.myform)
       this.$refs.myform.validate(isOk => {
         if (isOk) {
-          console.log('校验通过')
+          // console.log('校验通过')
+          let { articleID } = this.$route.params
+          this.$axios({
+            url: articleID ? `/articles/${articleID}` : '/articles',
+            method: articleID ? 'put' : 'post',
+            params: { draft },
+            data: this.formDate
+          }).then(res => {
+            this.$message({
+              type: 'success',
+              message: '发布成功'
+            }) // 提示信息
+            this.$router.push('/home/articles') // 跳转
+          })
         }
-      })
-      this.$axios({
-        url: '/articles',
-        method: 'post',
-        params: { draft },
-        data: this.formDate
-      }).then(res => {
-        this.$message({
-          type: 'success',
-          message: '发布成功'
-        }) // 提示信息
-        this.$router.push('/home/articles') // 跳转
       })
     },
     // 获取文章频道

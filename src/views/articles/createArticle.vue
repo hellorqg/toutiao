@@ -10,7 +10,7 @@
       </el-form-item>
       <!-- 内容 -->
       <el-form-item label="内容:">
-        <el-input  type="textarea" :rows="4"></el-input>
+        <el-input type="textarea" :rows="4"></el-input>
       </el-form-item>
       <!-- 封面 -->
       <el-form-item label="封面:">
@@ -23,7 +23,9 @@
       </el-form-item>
       <!-- 频道 -->
       <el-form-item label="频道">
-        <el-select></el-select>
+        <el-select>
+          <el-option v-for="item in channels" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <!-- 按钮 -->
 
@@ -36,7 +38,26 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      channels: [] // 文章频道数组
+    }
+  },
+  methods: {
+    getChannels () {
+      this.$axios({
+        url: '/channels'
+      }).then(res => {
+        console.log(res.data)
+        this.channels = res.data.channels
+      })
+    }
+  },
+  created () {
+    this.getChannels() // 获取文章频道
+  }
+}
 </script>
 
 <style>

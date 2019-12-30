@@ -21,9 +21,9 @@
         <el-button type="primary" @click="editInfo">保存信息</el-button>
       </el-form-item>
     </el-form>
-    <!-- 上传 -->
-    <el-upload class="upload" action>
-      <img @click="editPhoto" :src="formDate.photo? formDate.photo: defaultImg" alt />
+    <!-- 上传  自定义上传方法http-request  show-file-list 是否显示上传列表  -->
+    <el-upload class="upload" action :http-request="editPhoto" v-loading='loading' :show-file-list='false'>
+      <img  :src="formDate.photo? formDate.photo: defaultImg" alt />
     </el-upload>
   </el-card>
 </template>
@@ -32,6 +32,7 @@
 export default {
   data () {
     return {
+      loading: false,
       formDate: {
         name: '', // 用户名
         photo: '', // 用户头像
@@ -58,13 +59,18 @@ export default {
   },
   methods: {
     //   编辑用户头像
-    editPhoto () {
+    editPhoto (params) {
+      this.loading = true
       let data = new FormData()
-      data.append('photo')
+      data.append('photo', params.file)
       this.$axios({
         url: '/user/photo',
         method: 'PATCH',
-        data: this.data
+        data
+      }).then(res => {
+        this.loading = false
+        // console.log(res.data.photo)
+        this.formDate.photo = res.data.photo
       })
     },
     //   编辑用户信息

@@ -14,6 +14,7 @@ const routes = [
     path: '/login',
     component: logintt
   },
+
   {
     path: '/home',
     name: 'home',
@@ -41,7 +42,11 @@ const routes = [
     { // 修改文章
       path: 'publish/:articleID',
       component: () => import('../views/articles/createArticle.vue')
-    }]
+    },
+    {
+      path: 'userInfo',
+      component: () => import('../views/userInfo')
+    } ]
   }
 
   // {

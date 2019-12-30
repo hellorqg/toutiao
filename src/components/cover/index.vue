@@ -1,9 +1,13 @@
 <template>
+  <!-- dialog组件 -->
+
   <div class="cover_big">
-    <div class="small_cover" v-for="item in list" :key="item" @click="dialog">
+    <div class="small_cover" v-for="(item,index) in list" :key="index" @click="opendialog(index)">
       <img :src="item? item: defultImg" alt />
     </div>
-    <el-dialog @close='closeDialog' :visible="visibleDialog">11</el-dialog>
+    <el-dialog @close="closeDialog" :visible="visibleDialog">
+      <selectImg @selectImgs="chuandi"></selectImg>
+    </el-dialog>
   </div>
 </template>
 
@@ -14,13 +18,21 @@ export default {
   data () {
     return {
       defultImg: require('../../assets/img/pic_bg.png'), // 默认图片
-      visibleDialog: false
-
+      visibleDialog: false,
+      clickIndex: -1 // 当前点击的 需要上传图片的盒子 的下标
     }
   },
   methods: {
-    dialog () {
+    chuandi (url) {
+      // alert('接收到' + url)
+      // 通过再一次子传父把url给createArticle修改list的数据
+      this.$emit('selectTwo', url, this.clickIndex)
+      this.closeDialog()
+    },
+    opendialog (index) {
+      // alert(index)
       this.visibleDialog = true // 点击打开对话框
+      this.clickIndex = index
     },
     closeDialog () {
       this.visibleDialog = false

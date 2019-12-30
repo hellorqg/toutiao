@@ -23,7 +23,7 @@
         </el-radio-group>
       </el-form-item>
       <!-- 封面图片 -->
-       <cover :list='formDate.cover.images'></cover>
+       <cover @selectTwo='jieshou' :list='formDate.cover.images'></cover>
       <!-- 频道 -->
       <el-form-item label="频道" prop="channel_id">
         <el-select v-model="formDate.channel_id">
@@ -69,6 +69,17 @@ export default {
     }
   },
   methods: {
+    // 接收子组件cover传递的数据
+    jieshou (url, index) {
+      // alert('接收到了' + url + '---------------' + index)
+      this.formDate.cover.images = this.formDate.cover.images.map((item, i) => index === i ? url : item
+        // if (index === i) {
+        //   return url
+        // }
+        // return item
+      )
+    },
+
     // 监听封面类型的变化
     coverImg () {
       // 根据cover的类型来决定images数组的内容

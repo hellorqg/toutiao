@@ -56,6 +56,7 @@ function (error) {
   }
   //   提示上面状态码时的弹窗信息
   Message({ type: 'warning', message })
+
   // 这里需要处理错误后的代码执行过程 否则仍会进 then中
 
   return Promise.reject(error)

@@ -9,18 +9,21 @@
         <el-input style="width:60%" v-model="formDate.title"></el-input>
       </el-form-item>
       <!-- 内容 -->
-      <el-form-item label="内容:" prop="content">
-        <el-input type="textarea" :rows="4" v-model="formDate.content"></el-input>
+      <el-form-item label="内容:" prop="content" class="big_quill">
+        <!-- <el-input type="textarea" :rows="4" v-model="formDate.content"></el-input> -->
+        <quill-editor v-model="formDate.content" class="text_input"></quill-editor>
       </el-form-item>
       <!-- 封面 -->
       <el-form-item label="封面:" prop="cover">
-        <el-radio-group v-model="formDate.cover.type">
+        <el-radio-group v-model="formDate.cover.type" @change="coverImg">
           <el-radio :label="1">单图</el-radio>
           <el-radio :label="3">三图</el-radio>
           <el-radio :label="0">无图</el-radio>
           <el-radio :label="-1">自动</el-radio>
         </el-radio-group>
       </el-form-item>
+      <!-- 封面图片 -->
+       <cover :list='formDate.cover.images'></cover>
       <!-- 频道 -->
       <el-form-item label="频道" prop="channel_id">
         <el-select v-model="formDate.channel_id">
@@ -41,6 +44,7 @@
 export default {
   data () {
     return {
+      loading: false,
       channels: [], // 文章频道数组
       // 校验规则对象
       formDate: {
@@ -55,13 +59,28 @@ export default {
       // 规则对象
       articleRule: {
         // 标题、内容、频道 必填
-        title: [{ required: true, message: '标题不能为空' }, { min: 5, max: 30, message: '标题长度5-30字' }],
+        title: [
+          { required: true, message: '标题不能为空' },
+          { min: 5, max: 30, message: '标题长度5-30字' }
+        ],
         content: [{ required: true, message: '内容不能为空' }],
         channel_id: [{ required: true, message: '频道不能为空' }]
       }
     }
   },
   methods: {
+    // 监听封面类型的变化
+    coverImg () {
+      // 根据cover的类型来决定images数组的内容
+      if (this.formDate.cover.type === -1 || this.formDate.cover.type === 0) {
+        this.formDate.cover.images = []
+      } else if (this.formDate.cover.type === 1) {
+        this.formDate.cover.images = ['']
+      } else if (this.formDate.cover.type === 3) {
+        this.formDate.cover.images = ['', '', '']
+      }
+      // console.log(this.formDate.cover.images)
+    },
     // 修改文章
     editArticle (articleID) {
       this.$axios({
@@ -97,17 +116,17 @@ export default {
       this.$axios({
         url: '/channels'
       }).then(res => {
-        console.log(res.data)
+        // console.log(res.data)
         this.channels = res.data.channels
       })
     }
   },
   watch: {
-    $route  (to, from) { // 检测路由变化
+    $route (to, from) {
+      // 检测路由变化
       // 判断是修改还是发布
       if (to.params.articleID) {
         // 存在长度则是去修改
-
       } else {
         // 是发布
         this.formDate = {
@@ -130,5 +149,13 @@ export default {
 }
 </script>
 
-<style>
+<style lang='less' scoped>
+.big_quill {
+ margin-bottom: 100px;
+ margin-top: 50px;
+  .text_input {
+    height: 300px;
+
+  }
+}
 </style>

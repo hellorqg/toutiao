@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -71,6 +72,7 @@ export default {
         this.loading = false
         // console.log(res.data.photo)
         this.formDate.photo = res.data.photo
+        eventBus.$emit('updateUser') // 事件bus监听头像变化
       })
     },
     //   编辑用户信息
@@ -88,6 +90,7 @@ export default {
             type: 'success',
             message: '修改成功'
           })
+          eventBus.$emit('updateUser') // 事件bus监听用户信息变化
         })
       })
     },

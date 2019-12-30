@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import eventBus from '../../utils/eventBus'
 export default {
   data () {
     return {
@@ -36,6 +37,19 @@ export default {
     }
   },
   methods: {
+    getUser () {
+      // 调用接口 获取数据
+      this.$axios({
+        url: '/user/profile'
+      // headers: {
+      //   Authorization: `Bearer ${tokens}`
+      // }
+      }).then(res => {
+      // console.log(res.data)
+      // 接口返回数据赋值给data中的变量
+        this.userInfo = res.data
+      })
+    },
     // 退出方法
     logOut (command) {
       if (command === 'logOuts') {
@@ -51,17 +65,10 @@ export default {
   created () {
     // let tokens = localStorage.getItem('user-token')
     // console.log(tokens)
+    this.getUser()
 
-    // 调用接口 获取数据
-    this.$axios({
-      url: '/user/profile'
-      // headers: {
-      //   Authorization: `Bearer ${tokens}`
-      // }
-    }).then(res => {
-      // console.log(res.data)
-      // 接口返回数据赋值给data中的变量
-      this.userInfo = res.data
+    eventBus.$on('updateUser', () => {
+      this.getUser()
     })
   }
 }

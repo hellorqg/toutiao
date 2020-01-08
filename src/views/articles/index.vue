@@ -144,20 +144,18 @@ export default {
       this.$router.push(`/home/publish/${id}`)
     },
     // 删除文章
-    delArticles (id) {
-      this.$confirm('是否删除').then(() => {
-        this.$axios({
-          url: `/articles/${id}`,
-          method: 'delete'
-        }).then(res => {
-          // console.log(res)
-          this.$message({
-            type: 'success',
-            message: '删除成功'
-          })
-          this.condition()
-        })
+    async delArticles (id) {
+      await this.$confirm('是否删除')
+      await this.$axios({
+        url: `/articles/${id}`,
+        method: 'delete'
       })
+      // console.log(res)
+      this.$message({
+        type: 'success',
+        message: '删除成功'
+      })
+      this.condition()
     },
 
     condition () {
@@ -190,26 +188,24 @@ export default {
       this.condition()
     },
     //   获取文章频道
-    getChannel () {
-      this.$axios({
+    async getChannel () {
+      let res = await this.$axios({
         url: '/channels'
-      }).then(res => {
-        // console.log(res.data)
-        this.channelList = res.data.channels
       })
+      // console.log(res.data)
+      this.channelList = res.data.channels
     },
 
     //   获取文章
-    getandShow (params) {
-      this.$axios({
+    async  getandShow (params) {
+      let res = await this.$axios({
         url: '/articles',
         params
-      }).then(res => {
-        console.log(res.data.results)
-        this.list = res.data.results
-        this.page.total = res.data.total_count
-        this.page.pageCurrent = res.data.page
       })
+      console.log(res.data.results)
+      this.list = res.data.results
+      this.page.total = res.data.total_count
+      this.page.pageCurrent = res.data.page
     }
   },
   created () {

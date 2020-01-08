@@ -93,43 +93,37 @@ export default {
       // console.log(this.formDate.cover.images)
     },
     // 修改文章
-    editArticle (articleID) {
-      this.$axios({
+    async editArticle (articleID) {
+      let res = await this.$axios({
         url: `/articles/${articleID}`
-      }).then(res => {
-        this.formDate = res.data
       })
+      this.formDate = res.data
     },
     // 发布文章/草稿
-    publishArticle (draft) {
+    async publishArticle (draft) {
       // console.log(this.$refs.myform)
-      this.$refs.myform.validate(isOk => {
-        if (isOk) {
-          // console.log('校验通过')
-          let { articleID } = this.$route.params
-          this.$axios({
-            url: articleID ? `/articles/${articleID}` : '/articles',
-            method: articleID ? 'put' : 'post',
-            params: { draft },
-            data: this.formDate
-          }).then(res => {
-            this.$message({
-              type: 'success',
-              message: '发布成功'
-            }) // 提示信息
-            this.$router.push('/home/articles') // 跳转
-          })
-        }
+      await this.$refs.myform.validate()
+      // console.log('校验通过')
+      let { articleID } = this.$route.params
+      await this.$axios({
+        url: articleID ? `/articles/${articleID}` : '/articles',
+        method: articleID ? 'put' : 'post',
+        params: { draft },
+        data: this.formDate
       })
+      this.$message({
+        type: 'success',
+        message: '发布成功'
+      }) // 提示信息
+      this.$router.push('/home/articles') // 跳转
     },
     // 获取文章频道
-    getChannels () {
-      this.$axios({
+    async getChannels () {
+      let res = await this.$axios({
         url: '/channels'
-      }).then(res => {
-        // console.log(res.data)
-        this.channels = res.data.channels
       })
+      // console.log(res.data)
+      this.channels = res.data.channels
     }
   },
   watch: {

@@ -72,43 +72,41 @@ export default {
     },
 
     // 获取数据
-    getAndShow () {
+    async getAndShow () {
       // 获取时打开加载
       this.loading = true
-      this.$axios({
+      let res = await this.$axios({
         url: '/articles',
         params: { response_type: 'comment', page: this.pages.currentPage, per_page: this.pages.pageSize }
-      }).then(res => {
-        // 获取完毕后关闭加载
-        this.loading = false
-        // debugger
-        //   console.log(res.data)
-        this.list = res.data.results
-        this.pages.total = res.data.total_count // 文章总条数
-        this.pages.currentPage = res.data.page // 当前页
       })
+      // 获取完毕后关闭加载
+      this.loading = false
+      // debugger
+      //   console.log(res.data)
+      this.list = res.data.results
+      this.pages.total = res.data.total_count // 文章总条数
+      this.pages.currentPage = res.data.page // 当前页
     },
 
-    emitsatus (row) {
+    // 修改评论状态
+    async emitsatus (row) {
       let mess = row.comment_status ? '关闭' : '打开'
-      this.$confirm(`此操作将${mess}评论 是否继续?`, '提示', {
+      await this.$confirm(`此操作将${mess}评论 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        //   点击确定后进入
-        // 调用接口 修改状态
-        this.$axios({
-          url: '/comments/status',
-          method: 'put',
-          params: { article_id: row.id.toString() },
-          //   是否允许评论 点击之后状态改变 原本false的话不允许 现在是true 允许
-          data: { allow_comment: !row.comment_status }
-        }).then(res => {
-          // 修改评论过后再调用数据
-          this.getAndShow()
-        })
       })
+      //   点击确定后进入
+      // 调用接口 修改状态
+      await this.$axios({
+        url: '/comments/status',
+        method: 'put',
+        params: { article_id: row.id.toString() },
+        //   是否允许评论 点击之后状态改变 原本false的话不允许 现在是true 允许
+        data: { allow_comment: !row.comment_status }
+      })
+      // 修改评论过后再调用数据
+      this.getAndShow()
     }
   },
 

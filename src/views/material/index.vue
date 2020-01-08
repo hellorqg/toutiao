@@ -15,7 +15,7 @@
       <el-tab-pane label="全部" name="all">
         <div class="allImg">
           <el-card v-for="item in imgs" :key="item.id" class="listImg">
-            <img :src="item.url" alt style="height:100%" />
+            <img @click="openDialog" :src="item.url" alt style="height:100%" />
             <el-row class="icon" type="flex" justify="space-around" align="middle">
               <i
                 @click="collects(item)"
@@ -44,10 +44,17 @@
         layout="prev, pager, next"
         :total="pages.total"
         :current-page="pages.currentPage"
-        :page-size='pages.pageSizes'
-        @current-change='changepage'
+        :page-size="pages.pageSizes"
+        @current-change="changepage"
       ></el-pagination>
     </el-row>
+    <el-dialog @close="closeDialog" :visible="diaLogs">
+      <el-carousel indicator-position="outside" height='600px' class="carousel">
+        <el-carousel-item v-for="item in imgs" :key="item.id" >
+          <img :src="item.url" alt="">
+        </el-carousel-item>
+      </el-carousel>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -55,6 +62,7 @@
 export default {
   data () {
     return {
+      diaLogs: false,
       activeName: 'all', // 默认选中的tab栏
       imgs: [], // 用户图片的列表
       // collect: true, // 用户图片是否收藏 布尔值
@@ -67,48 +75,49 @@ export default {
     }
   },
   methods: {
+    closeDialog () {
+      this.diaLogs = false
+    },
+    openDialog () {
+      this.diaLogs = true
+    },
     // 切换页码
     changepage (newPage) {
       this.pages.currentPage = newPage // 切换页码后将新页码赋值
       this.getandShow() // 调用获取图片方法
     },
     // 删除图片
-    delImg (item) {
-      this.$confirm('确定删除？').then(() => {
-        this.$axios({
-          url: `/user/images/${item.id}`,
-          method: 'delete'
-        }).then(res => {
-          // console.log(res)
-          this.getandShow()
-        })
+    async delImg (item) {
+      await this.$confirm('确定删除？')
+      await this.$axios({
+        url: `/user/images/${item.id}`,
+        method: 'delete'
       })
+      this.getandShow()
     },
     // 取消/收藏图片
-    collects (item) {
-      this.$axios({
+    async collects (item) {
+      await this.$axios({
         url: `/user/images/${item.id}`,
         method: 'put',
         data: {
           collect: !item.is_collected
         }
-      }).then(res => {
-        this.getandShow()
       })
+      this.getandShow()
     },
     // 上传图片
-    upImg (params) {
+    async upImg (params) {
       this.loading = true
       let data = new FormData()
       data.append('image', params.file)
-      this.$axios({
+      await this.$axios({
         method: 'post',
         url: '/user/images',
         data
-      }).then(res => {
-        this.loading = false
-        this.getandShow()
       })
+      this.loading = false
+      this.getandShow()
       // debugger
     },
 
@@ -120,19 +129,18 @@ export default {
     },
 
     // 获取用户图片
-    getandShow () {
-      this.$axios({
+    async  getandShow () {
+      let res = await this.$axios({
         url: '/user/images',
         params: {
           collect: this.activeName === 'collect',
           page: this.pages.currentPage, // 当前页
           per_page: this.pages.pageSizes // 单页显示个数
         }
-      }).then(res => {
-        // console.log(res.data)
-        this.imgs = res.data.results
-        this.pages.total = res.data.total_count // 总页数
       })
+      // console.log(res.data.results)
+      this.imgs = res.data.results
+      this.pages.total = res.data.total_count // 总页数
     }
   },
   created () {
@@ -167,6 +175,11 @@ export default {
     i {
       cursor: pointer;
     }
+  }
+}
+.carousel{
+  img{
+    width: 100%;
   }
 }
 </style>

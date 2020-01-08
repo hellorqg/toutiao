@@ -54,23 +54,19 @@ export default {
     }
   },
   methods: {
-    loginSubmit () {
-      this.$refs.myForm.validate(isOk => {
-        if (isOk) {
-          // 校验通过 调用接口检查数据
-          // console.log('通过')
-          this.$axios({
-            url: '/authorizations',
-            method: 'post',
-            data: this.loginForm
-          }).then(res => {
-            // console.log(res)
-            window.localStorage.setItem('user-token', res
-              .data.token)
-            this.$router.push('/home')
-          })
-        }
+    async loginSubmit () {
+      await this.$refs.myForm.validate()
+      // 校验通过 调用接口检查数据
+      // console.log('通过')
+      let res = await this.$axios({
+        url: '/authorizations',
+        method: 'post',
+        data: this.loginForm
       })
+      // console.log(res)
+      window.localStorage.setItem('user-token', res
+        .data.token)
+      this.$router.push('/home')
     }
   }
 }

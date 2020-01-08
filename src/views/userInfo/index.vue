@@ -60,48 +60,44 @@ export default {
   },
   methods: {
     //   编辑用户头像
-    editPhoto (params) {
+    async  editPhoto (params) {
       this.loading = true
       let data = new FormData()
       data.append('photo', params.file)
-      this.$axios({
+      let res = await this.$axios({
         url: '/user/photo',
         method: 'PATCH',
         data
-      }).then(res => {
-        this.loading = false
-        // console.log(res.data.photo)
-        this.formDate.photo = res.data.photo
-        eventBus.$emit('updateUser') // 事件bus监听头像变化
       })
+      this.loading = false
+      // console.log(res.data.photo)
+      this.formDate.photo = res.data.photo
+      eventBus.$emit('updateUser') // 事件bus监听头像变化
     },
     //   编辑用户信息
-    editInfo () {
+    async editInfo () {
       // 校验用户信息
-      this.$refs.myforms.validate().then(res => {
-        // console.log(1)
-        this.$axios({
-          url: '/user/profile',
-          method: 'PATCH',
-          data: this.formDate
-        }).then(res => {
-        //   console.log(res)
-          this.$message({
-            type: 'success',
-            message: '修改成功'
-          })
-          eventBus.$emit('updateUser') // 事件bus监听用户信息变化
-        })
+      await this.$refs.myforms.validate()
+      // console.log(1)
+      await this.$axios({
+        url: '/user/profile',
+        method: 'PATCH',
+        data: this.formDate
       })
+      //   console.log(res)
+      this.$message({
+        type: 'success',
+        message: '修改成功'
+      })
+      eventBus.$emit('updateUser') // 事件bus监听用户信息变化
     },
     //   获取用户信息
-    getUserInfo () {
-      this.$axios({
+    async getUserInfo () {
+      let res = await this.$axios({
         url: '/user/profile'
-      }).then(res => {
-        // console.log(res)
-        this.formDate = res.data
       })
+      // console.log(res)
+      this.formDate = res.data
     }
   },
   created () {
